@@ -1,9 +1,3 @@
 # Change Log
 
-All notable changes to the "code-translate" extension will be documented in this file.
-
-Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
-
-## [Unreleased]
-
-- Initial release
+See https://github.com/QuanQuan-CHO/vscode-word-translation/releases
