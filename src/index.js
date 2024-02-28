@@ -20,34 +20,44 @@ ${translation.replace(/\\n/g, `
 `)}`
 }
 
-async function init() {
-  vscode.languages.registerHoverProvider('*', {
-    async provideHover(document, position) {
-      if (!document.getWordRangeAtPosition(position)) {
-        return
-      }
-      let word = document.getText(document.getWordRangeAtPosition(position))
-      let selectText = vscode.window.activeTextEditor.document.getText(vscode.window.activeTextEditor.selection)
-      if (selectText && word.indexOf(selectText) > -1) {
-        word = selectText
-      }
-      let originText = formatter.cleanWord(word)
-      let words = formatter.getWordArray(formatter.cleanWord(word))
-      let hoverText = ''
-      for (let i = 0; i < words.length; i++) {
-        let _w = words[i]
-        let ret = await DICTQuery(_w)
-        if (i == 0) {
-          hoverText += genMarkdown(_w, ret.w, ret.p)
-        } else {
-          hoverText += markdownLine + genMarkdown(_w, ret.w, ret.p)
+function init(context) {
+  // The `vscode.TextEditorDecorationType` object should only be created once
+  // Otherwise, the hoverMessage will be displayed repeatedly
+  const decorationType = vscode.window.createTextEditorDecorationType({
+    backgroundColor: new vscode.ThemeColor('editor.background'),
+    rangeBehavior: vscode.DecorationRangeBehavior.ClosedClosed
+  });
+  context.subscriptions.push(
+    vscode.commands.registerCommand('word-translation.translate',
+      async function(){
+        //1.generate tranlation `hoverMessage`
+        const editor = vscode.window.activeTextEditor
+        const selectedText = editor.document.getText(editor.selection)
+        const originText = formatter.cleanWord(selectedText)
+        const header = markdownHeader.replace('$word', originText)
+        const hoverMessage = new vscode.MarkdownString(header)
+        const words = formatter.getWordArray(originText)
+        for (const i in words) {
+          let word = words[i]
+          let ret = await DICTQuery(word)
+          if (i == 0) {
+            hoverMessage.appendMarkdown(genMarkdown(word, ret.w, ret.p))
+          } else {
+            hoverMessage.appendMarkdown(markdownLine + genMarkdown(word, ret.w, ret.p))
+          }
         }
+        hoverMessage.appendMarkdown(markdownFooter)
+        hoverMessage.isTrusted = true
+
+        //2.set `hoverMessage` decoration to editor
+        const range = new vscode.Range(editor.selection.start, editor.selection.end)
+        const decorationOptions = [{range, hoverMessage}]
+        editor.setDecorations(decorationType, decorationOptions)
+        vscode.commands.executeCommand('editor.action.showHover') //display the translation decoration
+        editor.setDecorations(decorationType, []) //clear the translation decoration after display
       }
-      const header = markdownHeader.replace('$word', originText)
-      hoverText = header + hoverText + markdownFooter
-      return new vscode.Hover(hoverText)
-    }
-  })
+    )
+  )
 }
 
 

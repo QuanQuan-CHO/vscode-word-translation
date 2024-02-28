@@ -1,19 +1,25 @@
 {
-  "name": "code-translate",
-  "displayName": "Code Translate",
-  "description": "A pure vscode translation plug-in; 一款纯粹的 vscode 滑词翻译插件",
+  "name": "word-translation",
+  "displayName": "Word Translation",
+  "description": "一款纯粹的VSCode划词翻译插件",
   "keywords": [
     "翻译",
-    "滑词翻译",
-    "translate",
+    "划词翻译",
     "translation",
-    "code-translation",
-    "code translation",
-    "code-translate",
-    "code translate"
+    "word translation"
   ],
   "version": "1.0.20",
-  "publisher": "w88975",
+  "publisher": "QuanQuan-CHO",
+  "author": {
+    "email": "12011619@mail.sustech.edu.cn",
+    "name": "QuanQuan-CHO",
+    "url": "https://github.com/QuanQuan-CHO"
+  },
+  "repository": "https://github.com/QuanQuan-CHO/vscode-word-translation",
+  "bugs": {
+    "url": "https://github.com/QuanQuan-CHO/vscode-word-translation/issues"
+  },
+  "license": "MIT", 
   "icon": "icon.png",
   "engines": {
     "vscode": "^1.31.1"
@@ -21,13 +27,24 @@
   "categories": [
     "Other"
   ],
-  "activationEvents": [
-    "*"
-  ],
+  "activationEvents": ["onStartupFinished"],
   "main": "./extension.js",
-  "browser": "./dist/web/extension.js",
   "contributes": {
-    "commands": []
+    "commands": [
+      {
+        "command": "word-translation.translate",
+        "title": "Translate"
+      }
+    ],
+    "menus": {
+      "editor/context": [
+        {
+          "command": "word-translation.translate",
+          "when": "editorHasSelection",
+          "group": "navigation"
+        }
+      ]
+    }
   },
   "scripts": {
     "lint": "eslint .",

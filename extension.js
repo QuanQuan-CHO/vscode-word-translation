@@ -2,10 +2,9 @@ const translate = require('./src/index.js');
 /**
  * @param {vscode.ExtensionContext} context
  */
-async function activate() {
-    translate.init()
+function activate(context) {
+    translate.init(context)
 }
-exports.activate = activate;
 
 function deactivate() {
 }
