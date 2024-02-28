@@ -1,0 +1,45 @@
+name: Publish Extension
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - "v*"
+
+# Some actions need extra permissions of the GITHUB_TOKEN:
+# - https://github.com/softprops/action-gh-release#permissions
+# - https://github.com/ad-m/github-push-action#requirements-and-prerequisites
+# Learn more about permissions of the GITHUB_TOKEN:
+# - https://docs.github.com/en/actions/security-guides/automatic-token-authentication#permissions-for-the-github_token
+# - https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#permissions
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+    
+      - name: Install packages
+        run: npm i
+      
+      - name: Publish to VSCode Marketplace
+        id: publishToMarketplace
+        uses: HaaLeo/publish-vscode-extension@v1
+        with:
+          pat: ${{ secrets.VS_MARKETPLACE_TOKEN }}
+          registryUrl: https://marketplace.visualstudio.com
+
+      # release = tag + title + description + packages
+      - name: Release vsix package
+        uses: softprops/action-gh-release@v1
+        with:
+          files: ${{ steps.publishToMarketplace.outputs.vsixPath }}
+          body_path: release.md
