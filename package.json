@@ -9,15 +9,15 @@
     "word translation"
   ],
   "version": "0.1.0",
-  "publisher": "QuanQuan-CHO",
+  "publisher": "liqwang",
   "author": {
     "email": "12011619@mail.sustech.edu.cn",
-    "name": "QuanQuan-CHO",
-    "url": "https://github.com/QuanQuan-CHO"
+    "name": "liqwang",
+    "url": "https://github.com/liqwang"
   },
-  "repository": "https://github.com/QuanQuan-CHO/vscode-word-translation",
+  "repository": "https://github.com/liqwang/vscode-word-translation",
   "bugs": {
-    "url": "https://github.com/QuanQuan-CHO/vscode-word-translation/issues"
+    "url": "https://github.com/liqwang/vscode-word-translation/issues"
   },
   "license": "MIT", 
   "icon": "icon.png",
